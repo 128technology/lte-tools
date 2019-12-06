@@ -39,6 +39,12 @@ class Modem:
             'pin_retries_command': None,
             'reset_command': 'AT!RESET',
         },
+        'EC25': {
+            'vendor_ati': 'Quectel',
+            'model_ati': 'EC25',
+            'pin_retries_command': 'AT+QPINC?',
+            'reset_command': 'AT+CFUN=1,1',
+        },
         'EG25': {
             'vendor_ati': 'Quectel',
             'model_ati': 'EG25',
