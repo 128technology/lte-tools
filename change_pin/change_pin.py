@@ -29,6 +29,7 @@ class UnexpectedResponseException(Exception):
 class Modem:
     """Class to handle modem calls."""
     modem = None
+    cpin = None
     current_pin = None
     reset_command = 'AT!RESET'
     supported_modem_info = {
@@ -93,7 +94,7 @@ class Modem:
         self.print_debug('SND: ' + command)
         self.modem.write(b'{}\r'.format(command))
 
-    def get_response(self, max=12):
+    def get_response(self, max=15):
         """Return AT command response."""
         response = []
         i = 1
@@ -124,6 +125,7 @@ class Modem:
         return response
 
     def detect_model(self):
+        """Match modem model based on model list."""
         self.model = None
         self.pin_retries_command = None
         self.send_command('ATI')
@@ -151,19 +153,33 @@ class Modem:
         print('\n'.join(self.ati))
         print('-'*26)
         self.get_pin_attempts()
+        self.sim_is_blocked()
+        self.sim_is_locked()
         self.sim_is_pin_protected()
 
     def reset(self):
         """Reset Modem."""
         self.send_command(self.reset_command)
 
+    def get_cpin(self):
+        """Retrieve AT+CPIN."""
+        if not self.cpin:
+            self.send_command('AT+CPIN?')
+            self.cpin = self.get_response()[0]
+
+    def sim_is_blocked(self):
+        """Return if SIM is blocked (PUK protected)."""
+        self.get_cpin()
+        if self.cpin == '+CPIN: SIM PUK':
+            return True
+        return False
+
     def sim_is_locked(self):
         """Return if SIM is locked (PIN protected)."""
-        self.send_command('AT+CPIN?')
-        response = self.get_response()
-        if response[0] == '+CPIN: READY':
+        self.get_cpin()
+        if self.cpin == '+CPIN: READY':
             return False
-        if response[0] == '+CPIN: SIM PIN':
+        if self.cpin == '+CPIN: SIM PIN':
             return True
 
     def sim_is_pin_protected(self):
@@ -197,10 +213,28 @@ class Modem:
         self.send_command('AT+CPIN="{}"'.format(current_pin))
         self.get_response()
         self.current_pin = current_pin
+        self.cpin = None
 
     def unblock_sim(self):
         """Unblock SIM by using PUK."""
-        return None
+        self.get_pin_attempts()
+        puk = prompt_for_pin('SIM is blocked. Enter PUK', length=8)
+        if not puk:
+            return
+        self.print_debug('PUK: ' + puk)
+
+        # prompt for new PIN
+        new_pin1 = prompt_for_pin('New PIN')
+        new_pin2 = prompt_for_pin('Retype new PIN')
+        if new_pin1 != new_pin2:
+            error('New PINs do not match')
+            return
+        self.print_debug('New PIN: ' + new_pin1)
+
+        self.send_command('AT+CPIN="{}","{}"'.format(puk, new_pin1))
+        self.get_response()
+        self.current_pin = new_pin1
+        self.cpin = None
 
     def change_pin(self, enabled=True):
         """Change PIN of a SIM."""
@@ -214,7 +248,7 @@ class Modem:
         if new_pin1 != new_pin2:
             error('New PINs do not match')
             return
-        self.print_debug('New PIN: ' + current_pin)
+        self.print_debug('New PIN: ' + new_pin1)
 
         # Set new PIN
         if not enabled:
@@ -327,10 +361,15 @@ def main():
             return
 
         # unlock sim (if needed)
+        if modem.sim_is_blocked():
+            modem.unblock_sim()
+            if modem.sim_is_blocked():
+                raise ModemException('Could not unblock SIM card (wrong PUK?)')
+
         if modem.sim_is_locked():
             modem.unlock_sim()
             if modem.sim_is_locked():
-                raise ModemException('Could not unlock SIM card (wrong PIN?).')
+                raise ModemException('Could not unlock SIM card (wrong PIN?)')
 
         if modem.sim_is_pin_protected():
             if (args.disable):
