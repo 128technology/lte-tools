@@ -50,6 +50,7 @@ Quectel
 EG25
 Revision: EG25GGBR07A07M2G
 --------------------------
+INFO: CCID: 89490200000000000000 (Provider: T-Mobile Germany)
 INFO: Remaining verification attempts: PIN=3 | PUK=10
 INFO: PIN verification is disabled
 ```
@@ -82,6 +83,7 @@ $ cat modem_info.json
             "vendor_ati": "Foo Bar Inc.",
             "model_ati": "F008AR",
             "reset_command": "AT!RESET",
+            "ccid_command": "AT+CCID"
         }
 }
 ```

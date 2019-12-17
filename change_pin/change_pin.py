@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c) 2019 128 Technology, Inc.
 # All rights reserved.
@@ -29,6 +30,7 @@ class UnexpectedResponseException(Exception):
 class Modem:
     """Class to handle modem calls."""
     modem = None
+    ccid = None
     cpin = None
     current_pin = None
     reset_command = 'AT!RESET'
@@ -39,21 +41,34 @@ class Modem:
             'vendor': 'Sierra Wireless',
             'pin_retries_command': None,
             'reset_command': 'AT!RESET',
+            'ccid_command': 'AT+ICCID',
         },
         'EC25': {
             'vendor_ati': 'Quectel',
             'model_ati': 'EC25',
             'pin_retries_command': 'AT+QPINC?',
             'reset_command': 'AT+CFUN=1,1',
+            'ccid_command': 'AT+QCCID',
         },
         'EG25': {
             'vendor_ati': 'Quectel',
             'model_ati': 'EG25',
             'pin_retries_command': 'AT+QPINC?',
             'reset_command': 'AT+CFUN=1,1',
+            'ccid_command': 'AT+QCCID',
         },
     }
     modem_info = supported_modem_info
+
+    provider_info = {
+        '4901': 'T-Mobile Germany',
+        '4902': 'T-Mobile Germany',
+        '4903': 'T-Mobile Germany',
+        '4920': 'Vodafone Germany',
+        '4921': 'E-Plus Germany',
+        '4922': 'Telefónica Germany',
+        '4303': 'T-Mobile Austria / Stellaneo',
+    }
 
     def __init__(self, device_name, debug, verbose):
         """Open a device and return handle."""
@@ -142,6 +157,8 @@ class Modem:
                         self.pin_retries_command = v['pin_retries_command']
                     if 'reset_command' in v:
                         self.reset_command = v['reset_command']
+                    if 'ccid_command' in v:
+                        self.ccid_command = v['ccid_command']
         if self.model:
             self.print_verbose(
                 'Detected Modem: {m.vendor} {m.model}'.format(m=self))
@@ -152,6 +169,8 @@ class Modem:
         print('----- Modem details -----')
         print('\n'.join(self.ati))
         print('-'*26)
+        self.get_ccid()
+        self.print_ccid()
         self.get_pin_attempts()
         self.sim_is_blocked()
         self.sim_is_locked()
@@ -160,6 +179,22 @@ class Modem:
     def reset(self):
         """Reset Modem."""
         self.send_command(self.reset_command)
+
+    def get_ccid(self):
+        """Retrieve AT+QCCID."""
+        if not self.ccid:
+            self.send_command(self.ccid_command)
+            self.ccid = self.get_response()[0].split(': ')[1]
+
+    def print_ccid(self):
+        """Pretty print CCID."""
+        provider = 'Unknown'
+        ccid = self.ccid
+        if ccid.startswith('89'):
+            provider_string = ccid[2:6]
+            if provider_string in self.provider_info:
+                provider = self.provider_info[provider_string]
+        self.print_verbose('CCID: {} (Provider: {})'.format(ccid, provider))
 
     def get_cpin(self):
         """Retrieve AT+CPIN."""
