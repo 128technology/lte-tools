@@ -43,6 +43,14 @@ class Modem:
             'reset_command': 'AT!RESET',
             'ccid_command': 'AT+ICCID',
         },
+        'EM7355': {
+            'vendor_ati': 'Manufacturer: Sierra Wireless, Incorporated',
+            'model_ati': 'Model: EM7355',
+            'vendor': 'Sierra Wireless',
+            'pin_retries_command': None,
+            'reset_command': 'AT!RESET',
+            'ccid_command': 'AT+ICCID',
+        },
         'EC25': {
             'vendor_ati': 'Quectel',
             'model_ati': 'EC25',

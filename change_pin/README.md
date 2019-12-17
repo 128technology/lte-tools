@@ -70,6 +70,7 @@ Use `--modem-info` to see details about the modem in use.
 This scripts has built-in support for these modems:
 
 * Sierra Wireless MC7455
+* Sierra Wireless EM7355
 * Quectel EC25/EG25
 
 In case you want to add support for your modem, create a file named `modem_info.json` and copy it to the current working directory.
