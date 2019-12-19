@@ -10,6 +10,7 @@
 
 from __future__ import print_function
 import argparse
+import fcntl
 import json
 import serial
 import sys
@@ -85,6 +86,14 @@ class Modem:
 
     def __init__(self, device_name, debug, verbose):
         """Open a device and return handle."""
+        # Lock modem file before opening it
+        lock_file = '/var/lock/{}.lock'.format(device_name.split('/')[-1])
+        try:
+            with open(lock_file, 'w') as fd:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except IOError:
+            raise ModemException('Could not acquire modem lock file.')
+
         self.modem = serial.Serial(device_name, timeout=5)
         self.debug = debug
         self.verbose = verbose
