@@ -75,7 +75,12 @@ class Modem:
         '4920': 'Vodafone Germany',
         '4921': 'E-Plus Germany',
         '4922': 'Telefónica Germany',
-        '4303': 'T-Mobile Austria / Stellaneo',
+        '4301': 'A1 Telekom Austria',
+        '4303': 'Magenta Telekom / Stellaneo',
+        '4305': 'Hutchison Drei Austria',
+        '4101': 'Swisscom',
+        '4102': 'Sunrise',
+        '4103': 'Salt Mobile',
     }
 
     def __init__(self, device_name, debug, verbose):
@@ -136,7 +141,8 @@ class Modem:
                 break
             if '+CME ERROR: SIM not inserted' in line or \
                '+CME ERROR: SIM failure' in line or \
-               '+CME ERROR: 10' in line:
+               '+CME ERROR: 10' in line or \
+               '+CME ERROR: 13' in line:
                 raise ModemException('No SIM inserted? ({})'.format(line))
             if 'ERROR' in line:
                 raise ModemException(line)
