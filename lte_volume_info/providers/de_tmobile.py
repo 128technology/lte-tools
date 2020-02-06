@@ -31,7 +31,10 @@ def get_stats(asset_id):
     """Return stats about initial and used volume."""
     stats = {}
     content = minions.call_minion_cmd(asset_id, CURL_CMD)
-    if 'Connection timed out' in content:
+    if 'Network is unreachable' in content:
+        stats = {'error': 'API service is unreachable. '
+                          'Maybe a service route needs to be added.'}
+    elif 'Connection timed out' in content:
         stats = {'error': 'Connection to API service timed out.'}
     elif 'error' in content:
         stats = {'error': content['error']}
