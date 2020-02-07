@@ -6,12 +6,11 @@ import json
 import os
 import requests
 import sys
+from time import gmtime, strftime, time
 from jinja2 import Template
 from xml.etree import ElementTree
 
 from providers import providers
-
-# $ cp 128t_black.png /var/www/128technology/
 
 
 TEMPLATE = 'lte_volume_info.template'
@@ -90,7 +89,14 @@ def create_html_document(node_stats, html_path):
         with open(TEMPLATE_PATH, 'r') as fd:
             template = Template(fd.read())
         with open(html_path, 'w') as fd:
-            fd.write(template.render(node_stats=node_stats))
+            generated_timestamp_unixtime = int(time())
+            generated_timestamp_utc = strftime(
+                '%Y-%m-%d %H:%M:%S UTC', gmtime(generated_timestamp_unixtime))
+            fd.write(template.render(
+                node_stats=node_stats,
+                generated_timestamp_utc=generated_timestamp_utc,
+                generated_timestamp_unixtime=generated_timestamp_unixtime,
+            ))
     except:
         raise
 

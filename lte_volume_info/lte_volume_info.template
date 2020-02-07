@@ -6,6 +6,29 @@
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script>
+            // use time zone settings from browser
+            const time_zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const date_options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: time_zone };
+            const time_options = { hour: 'numeric', minute: '2-digit', timeZone: time_zone };
+            const tz_options = { timeZoneName: 'short', timeZone: time_zone };
+
+            function ts_to_string(ts) {
+                const date = new Date(ts * 1000);
+                const str = date.toLocaleDateString(undefined, date_options) +
+                   ' um ' + date.toLocaleTimeString(undefined, time_options) +
+                   ' Uhr (' + date.toLocaleTimeString(undefined, tz_options).split(' ')[1] + ')';
+                return str;
+            }
+
+            function replace_ts() {
+                var ts = document.getElementsByClassName('timestamp');
+                var i;
+                for (i = 0; i < ts.length; i++) {
+                    ts[i].innerHTML = ts_to_string(ts[i].getAttribute('ts'));
+                }
+            }
+        </script>
         <style>
             @font-face {
                 font-family: t128;
@@ -27,6 +50,10 @@
                 background: linear-gradient(145deg, #37697f 30%, rgb(95, 135, 152) 100%);
                 color: #f3f3f3;
             }
+            .card-text {
+                width: 30%;
+                float: left;
+            }
             .alert {
                 margin-bottom: 0;
             }
@@ -46,9 +73,13 @@
             .header-logo {
                 float: left;
             }
+            .updated-timestamp {
+                font-size: 0.75em;
+                margin-bottom: 0;
+            }
         </style>
     </head>
-    <body>
+    <body onload="replace_ts()">
         <div class="header">
             <div class="header-logo">
                 <img height="72px" src="128t_black.png" style="padding: 1ex" />
@@ -67,10 +98,13 @@
                         ERROR: {{ stats["error"] }}
                     </div>
                     {% else %}
-                    <p class="card-text" style="width: 30%; float: left;" title="Stand: {{ stats["timestamp_utc"] }}">{{ stats["used_string"] }} von {{ stats["initial_string"] }}</p>
+                    <div class="card-text">
+                        <p>{{ stats["used_string"] }} von {{ stats["initial_string"] }}</p>
+                        <p class="updated-timestamp">Stand: <span class="timestamp" ts="{{ stats["timestamp_unixtime"] }}">{{ stats["timestamp_utc"] }}</span></p>
+                    </div>
                     <div style="width: 70%; float: left;">
                         <div class="progress" style="height: 25px;">
-                            <div class="progress-bar {{ stats["color"] }}" role="progressbar" style="width: {{ stats["percentage"] }}%" aria-valuenow="{{ stats["percentage"] }}" aria-valuemin="0" aria-valuemax="100">{{ stats["percentage"] }}%</div>
+                            <div class="progress-bar {{ stats["color"] }}" role="progressbar" style="width: {{ stats["percentage"] }}%" aria-valuenow="{{ stats["percentage"] }}" aria-valuemin="0" aria-valuemax="100">{% if stats["percentage"] >= 5 %}{{ stats["percentage"] }}%{% endif %}</div>
                         </div>
                     </div>
                     {% endif %}
@@ -78,6 +112,7 @@
             </div>
             <div style="padding: 1em"></div>
             {% endfor %}
+            <p class="updated-timestamp">Diese Seite wurde zuletzt generiert am <span class="timestamp" ts="{{ generated_timestamp_unixtime }}">{{ generated_timestamp_utc }}</span></p>
         </div>
     </body>
 </html>
