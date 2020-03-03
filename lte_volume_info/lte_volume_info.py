@@ -40,8 +40,12 @@ def get_lte_nodes(config_path):
     ns = {'sys': 'http://128technology.com/t128/config/system-config'}
     root = tree.getroot()
     for node in root.findall('.//sys:node', ns):
+        device_interfaces = node.findall('sys:device-interface', ns)
+        if not device_interfaces:
+            # ignore nodes without device-interfaces
+            continue
         node_name = node.find('sys:name', ns).text
-        for device_interface in node.findall('sys:device-interface', ns):
+        for device_interface in device_interfaces:
             type = device_interface.find('sys:type', ns)
             device_name = device_interface.find('sys:name', ns).text
             if type is None:
