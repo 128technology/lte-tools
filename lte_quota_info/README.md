@@ -39,6 +39,16 @@ $ vi config.json
 
 All other parameters can be left at their defaults.
 
+## Cronjob
+The script stores samples of received/sent bytes of the LTE device- interfaces from all routers which are connected to a conductor.
+To get accurate reported values it is recommended to run the script minutely per cronjob. Keep in mind that counters get reset during router restart. Keeping the interval short helps to keep track of such reset events.
+
+The crontab for a minutely script trigger looks like:
+
+```
+* * * * *    python /home/t128/lte_quota_info/lte_quota_info.py -c /home/t128/lte_quota_info/config.json
+```
+
 ## Customizations
 The html file is generated based on the template file `lte_quota_info.template`.
 The format of this template is jinja2, so customizations can be performed using html and jinja2 syntax.

@@ -56,7 +56,7 @@ def collect_stats(config, node_info):
 
     # create stats_dir if missing
     stats_dir = config.get(
-        'stats_dir', '/var/lib/128technology/lte_qouta_info')
+        'stats_dir', '/var/lib/128technology/lte_quota_info')
     if stats_dir and not os.path.isdir(stats_dir):
         os.mkdir(stats_dir)
     else:

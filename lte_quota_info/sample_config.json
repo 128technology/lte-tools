@@ -6,9 +6,9 @@
         "another-test-router": "30 GB"
     },
     "conductor": "localhost",
-    "html_path": "/var/www/128technology/lte_qouta_info.html",
+    "html_path": "/var/www/128technology/lte_quota_info.html",
     "html_template": "lte_quota_info.template",
     "percentage_orange": 80,
     "percentage_red": 95,
-    "stats_dir": "/var/lib/128technology/lte_qouta_info"
+    "stats_dir": "/var/lib/128technology/lte_quota_info"
 }

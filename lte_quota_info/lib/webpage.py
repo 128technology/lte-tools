@@ -11,7 +11,7 @@ def create_html_document(config, node_stats):
         template_path = config.get(
             'html_template', 'lte_quota_info.template')
         html_path = config.get(
-            'html_path', '/var/www/128technology/lte_qouta_info.html')
+            'html_path', '/var/www/128technology/lte_quota_info.html')
         if not os.path.isabs(template_path):
             template_path = os.path.join(sys.path[0], template_path)
         with open(template_path, 'r') as fd:
