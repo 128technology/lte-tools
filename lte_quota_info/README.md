@@ -48,7 +48,7 @@ To get accurate reported values it is recommended to run the script minutely per
 The crontab for a minutely script trigger looks like:
 
 ```
-* * * * *    python /home/t128/lte_quota_info/lte_quota_info.py -c /home/t128/lte_quota_info/config.json
+* * * * *    python /home/t128/lte-tools/lte_quota_info/lte_quota_info.py -c /home/t128/lte-tools/lte_quota_info/config.json
 ```
 
 ## Customizations
