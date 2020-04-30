@@ -11,6 +11,8 @@ $ cd lte-tools/lte_quota_info
 $ cp 128t_black.png t128.woff /var/www/128technology/
 $ sudo mkdir /var/lib/128technology/lte_quota_info
 $ sudo chown t128 /var/lib/128technology/lte_quota_info
+$ sudo touch /var/www/128technology/lte_quota_info.html
+$ sudo chown t128 /var/www/128technology/lte_quota_info.html
 ```
 
 ## Usage
