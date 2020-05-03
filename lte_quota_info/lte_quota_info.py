@@ -7,7 +7,7 @@ from lib.config import read_config
 from lib.log import set_log_level, debug
 from lib.routers import get_lte_nodes
 from lib.stats import collect_stats, calculate_total
-from lib.units import bytes_to_human
+from lib.units import bytes_to_human, human_to_size
 from lib.webpage import create_html_document
 
 
@@ -34,7 +34,7 @@ def main():
     for node_info in get_lte_nodes(config):
         router_name = node_info['router']
         node_name = node_info['node']
-        quota = node_info['quota']
+        quota = human_to_size(node_info['quota'])
 
         stats_log = collect_stats(config, node_info)
         if not stats_log:
