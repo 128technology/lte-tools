@@ -21,7 +21,7 @@ def bytes_to_human(bytes, html=False):
     for unit in units:
         if bytes < 1024:
             break
-        bytes /= 1024
+        bytes /= 1024.0
     if bytes >= 100:
         bytes_str = int(bytes)
     else:
