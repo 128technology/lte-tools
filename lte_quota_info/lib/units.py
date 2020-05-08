@@ -22,5 +22,9 @@ def bytes_to_human(bytes, html=False):
         if bytes < 1024:
             break
         bytes /= 1024
-    human = '{}{}{}'.format(bytes, spacer, unit)
+    if bytes >= 100:
+        bytes_str = int(bytes)
+    else:
+        bytes_str = '{:{prec}}'.format(float(bytes), prec='.3').replace('.', ',')
+    human = '{}{}{}'.format(bytes_str, spacer, unit)
     return human
