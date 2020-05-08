@@ -34,7 +34,7 @@ def main():
     for node_info in get_lte_nodes(config):
         router_name = node_info['router']
         node_name = node_info['node']
-        quota = human_to_size(node_info['quota'])
+        quota = node_info['quota']
 
         stats_log = collect_stats(config, node_info)
         if not stats_log:
