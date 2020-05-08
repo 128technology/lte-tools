@@ -12,7 +12,7 @@ def get_lte_nodes(config):
     if not api_key:
         fatal('No api_key has been specified in config file.')
     quotas = config.get('quotas')
-    default_quota = config.get('default_quota', human_to_size('5 GB'))
+    default_quota = human_to_size(config.get('default_quota', '5 GB'))
     conductor = config.get('conductor', 'localhost')
 
     api = RestApi(api_key, host=conductor)
