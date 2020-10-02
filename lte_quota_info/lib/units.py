@@ -1,7 +1,4 @@
 """Handle human readable units."""
-from math import log
-
-
 units = ['Bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB']
 
 
@@ -26,6 +23,8 @@ def bytes_to_human(bytes, html=False):
         bytes_str = int(bytes)
     else:
         bytes_str = '{:{prec}}'.format(
-            float(bytes), prec='.3').replace('.', ',').strip(',0')
+            float(bytes), prec='.3').replace('.', ',')
+        if bytes_str.endswith(',0'):
+            bytes_str = bytes_str.split(',')[0]
     human = '{}{}{}'.format(bytes_str, spacer, unit)
     return human
