@@ -11,7 +11,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 CACHE_TIMEOUT = 30  # in seconds
-CACHE_FILE = '/var/run/128technology/snmp-lte-stats.cache'
+CACHE_FILE = '/var/run/128technology/snmp_lte_stats.cache'
 BASE = '.1.3.6.1.4.1.45956.1.'
 STATS = (
     'Radio Interface',

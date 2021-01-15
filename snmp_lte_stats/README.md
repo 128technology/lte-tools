@@ -15,7 +15,7 @@ $ sudo ln -s /usr/local/src/lte-tools/snmp_lte_stats/snmp_lte_stats.py
 
 ## Apply salt state
 
-The salt state `snmp\_lte.sls` needs to be referenced in the `top.sls` file, e.g.
+The salt state `snmp_lte.sls` needs to be referenced in the `top.sls` file, e.g.
 
 ```
 $ cat /srv/salt/top.sls

@@ -4,7 +4,7 @@
       - pass .1.3.6.1.4.1.45956.1.100 /usr/sbin/snmp_lte_stats.py
     - mode: 400
 
-/usr/sbin/snmp-lte-stats.py:
+/usr/sbin/snmp_lte_stats.py:
   file.managed:
     - mode: 755
     - source: salt://snmp_lte_stats.py
