@@ -130,6 +130,9 @@ def populate_objects():
             if value.endswith(' dBm'):
                 type = 'integer'
                 value = value.strip(' dBm')
+            if value.endswith(' dB'):
+                type = 'integer'
+                value = value.strip(' dB')
             objects.update(generate_object(i, stat, value, type))
             if stat == 'Radio Interface':
                 i += 1
