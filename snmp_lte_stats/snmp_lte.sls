@@ -6,36 +6,37 @@
 {% set lte_script = "/usr/sbin/snmp_lte_stats.py" %}
 {% set override_file = "/etc/systemd/system/128T-snmpd.service.d/override.conf" %}
 
-128T snmpd config directory:
+snmp_lte 128T snmpd config directory:
   file.directory:
     - name: {{ base_directory }}/{{ config_directory }}
     - mode: 755
 
-128T snmpd include config:
+snmp_lte 128T snmpd include config:
   file.managed:
     - name: {{ base_directory }}/{{ include_config }}
     - contents:
       - includeDir	{{ base_directory }}/{{ config_directory }}
     - mode: 400
 
-128T snmpd lte config:
+snmp_lte 128T snmpd lte config:
   file.managed:
     - name: {{ base_directory }}/{{ lte_config }}
     - contents:
       - pass .1.3.6.1.4.1.45956.1.100 {{ lte_script }}
     - mode: 400
 
-lte script:
+snmp_lte lte script:
   file.managed:
     - name: {{ lte_script }}
     - mode: 755
     - source: salt://snmp_lte_stats.py
 
-/etc/systemd/system/128T-snmpd.service.d:
+snmp_lte systemd override directory:
   file.directory:
+    - name: /etc/systemd/system/128T-snmpd.service.d
     - mode: 755
 
-128T-snmpd.service:
+snmp_lte snmpd systemd:
   file.managed:
     - name: {{ override_file }}
     - contents: |
@@ -51,6 +52,7 @@ lte script:
     - onchanges:
       - file: {{ override_file }}
   service.running:
+    - name: 128T-snmpd.service
     - watch:
       - file: {{ base_directory }}/{{ lte_config }}
       - file: {{ lte_script }}
